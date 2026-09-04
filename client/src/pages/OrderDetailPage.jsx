@@ -402,7 +402,7 @@ export default function OrderDetailPage() {
                 color: 'var(--primary)',
               }}
             >
-              ${Number(order.total || 0).toFixed(2)}
+              ₹{Number(order.total || 0).toFixed(2)}
             </div>
           </div>
         </div>
@@ -476,7 +476,7 @@ export default function OrderDetailPage() {
             >
               {menuItems.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {item.name} — ${Number(item.price).toFixed(2)}
+                  {item.name} — ₹{Number(item.price).toFixed(2)}
                 </option>
               ))}
             </select>
@@ -557,7 +557,7 @@ export default function OrderDetailPage() {
             >
               <option value="">Choose a waiter...</option>
               {allUsers
-                .filter((u) => u.id !== order.primary_waiter_id && !order.collaborators?.some((c) => c.id === u.id))
+                .filter((u) => u.role === 'waiter' && u.id !== order.primary_waiter_id && !order.collaborators?.some((c) => c.id === u.id))
                 .map((u) => (
                   <option key={u.id} value={u.id}>
                     {u.name} ({u.role})

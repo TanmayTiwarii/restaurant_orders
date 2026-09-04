@@ -3,7 +3,7 @@ import {
   Clock,
   CheckCircle2,
   TrendingUp,
-  DollarSign,
+  IndianRupee,
   Download,
   Calendar,
   RefreshCw,
@@ -162,9 +162,9 @@ export default function DashboardPage() {
             />
             <StatCard
               title="Revenue Today"
-              value={`$${Number(stats.revenue_today || 0).toFixed(2)}`}
+              value={`₹${Number(stats.revenue_today || 0).toFixed(2)}`}
               subtitle="Total billed from served orders"
-              icon={DollarSign}
+              icon={IndianRupee}
               color="var(--purple)"
             />
           </div>

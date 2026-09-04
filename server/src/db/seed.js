@@ -12,6 +12,13 @@ async function seed() {
   try {
     await client.query('BEGIN');
 
+    // Clean up existing data to allow clean re-seeding with updated prices
+    await client.query('DELETE FROM order_history');
+    await client.query('DELETE FROM order_collaborators');
+    await client.query('DELETE FROM order_lines');
+    await client.query('DELETE FROM orders');
+    await client.query('DELETE FROM menu_items');
+
     // ── Users ──────────────────────────────────────────────────
     const managerHash = await bcrypt.hash('manager123', SALT_ROUNDS);
     const waiter1Hash = await bcrypt.hash('waiter123', SALT_ROUNDS);
@@ -49,16 +56,16 @@ async function seed() {
 
     // ── Menu Items ─────────────────────────────────────────────
     const menuItems = [
-      { name: 'Classic Burger', description: 'Angus beef patty with lettuce, tomato, and special sauce', price: 14.99 },
-      { name: 'Margherita Pizza', description: 'Wood-fired with fresh mozzarella, basil, and San Marzano tomatoes', price: 16.99 },
-      { name: 'Caesar Salad', description: 'Romaine, croutons, parmesan, and house-made Caesar dressing', price: 11.99 },
-      { name: 'Grilled Salmon', description: 'Atlantic salmon with lemon butter, asparagus, and wild rice', price: 24.99 },
-      { name: 'Pasta Carbonara', description: 'Spaghetti with pancetta, egg yolk, pecorino, and black pepper', price: 18.99 },
-      { name: 'Fish & Chips', description: 'Beer-battered cod with thick-cut fries and tartar sauce', price: 15.99 },
-      { name: 'Mushroom Risotto', description: 'Arborio rice with wild mushrooms, truffle oil, and parmesan', price: 17.99 },
-      { name: 'Chicken Wings', description: 'Crispy wings with choice of buffalo, BBQ, or garlic parmesan', price: 12.99 },
-      { name: 'Tiramisu', description: 'Classic Italian dessert with espresso-soaked ladyfingers', price: 9.99 },
-      { name: 'House Lemonade', description: 'Fresh-squeezed lemonade with mint', price: 4.99 },
+      { name: 'Classic Burger', description: 'Angus beef patty with lettuce, tomato, and special sauce', price: 299.00 },
+      { name: 'Margherita Pizza', description: 'Wood-fired with fresh mozzarella, basil, and San Marzano tomatoes', price: 399.00 },
+      { name: 'Caesar Salad', description: 'Romaine, croutons, parmesan, and house-made Caesar dressing', price: 249.00 },
+      { name: 'Grilled Salmon', description: 'Atlantic salmon with lemon butter, asparagus, and wild rice', price: 699.00 },
+      { name: 'Pasta Carbonara', description: 'Spaghetti with pancetta, egg yolk, pecorino, and black pepper', price: 449.00 },
+      { name: 'Fish & Chips', description: 'Beer-battered cod with thick-cut fries and tartar sauce', price: 399.00 },
+      { name: 'Mushroom Risotto', description: 'Arborio rice with wild mushrooms, truffle oil, and parmesan', price: 429.00 },
+      { name: 'Chicken Wings', description: 'Crispy wings with choice of buffalo, BBQ, or garlic parmesan', price: 329.00 },
+      { name: 'Tiramisu', description: 'Classic Italian dessert with espresso-soaked ladyfingers', price: 249.00 },
+      { name: 'House Lemonade', description: 'Fresh-squeezed lemonade with mint', price: 129.00 },
     ];
 
     const menuIds = [];

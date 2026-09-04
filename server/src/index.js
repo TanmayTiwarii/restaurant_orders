@@ -41,22 +41,16 @@ app.route('/health')
     res.status(200).end();
   });
 
-app.route('/api/health')
-  .get((_req, res) => {
-    res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
-  })
-  .head((_req, res) => {
-    res.status(200).end();
-  });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/menu', menuRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/orders', orderLineRoutes);       // /api/orders/:orderId/lines
-app.use('/api/orders', collaboratorRoutes);     // /api/orders/:orderId/collaborators
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/alerts', alertRoutes);
-app.use('/api/export', exportRoutes);
+
+app.use('/auth', authRoutes);
+app.use('/menu', menuRoutes);
+app.use('/orders', orderRoutes);
+app.use('/orders', orderLineRoutes);       // /orders/:orderId/lines
+app.use('/orders', collaboratorRoutes);     // /orders/:orderId/collaborators
+app.use('/dashboard', dashboardRoutes);
+app.use('/alerts', alertRoutes);
+app.use('/export', exportRoutes);
 
 /* ------------------------------------------------------------------ */
 /*  Error handler                                                      */

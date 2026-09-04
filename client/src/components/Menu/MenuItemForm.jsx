@@ -87,14 +87,14 @@ export default function MenuItemForm({ initialData, onSubmit, onCancel, loading 
       </div>
 
       <Input
-        label="Price ($)"
+        label="Price (₹)"
         name="price"
         type="number"
         step="0.01"
         min="0"
         value={formData.price}
         onChange={handleChange}
-        placeholder="12.50"
+        placeholder="250.00"
         required
       />
 

@@ -17,8 +17,11 @@ export async function addCollaborator(orderId, userId, performedBy) {
   }
 
   // Verify user exists and is a waiter
-  const userResult = await query('SELECT id, name FROM users WHERE id = $1', [userId]);
+  const userResult = await query('SELECT id, name, role FROM users WHERE id = $1', [userId]);
   if (userResult.rows.length === 0) throw new NotFoundError('User not found');
+  if (userResult.rows[0].role !== 'waiter') {
+    throw new BadRequestError('Only waiters can be added as collaborators');
+  }
 
   // Check if already a collaborator
   const existing = await query(

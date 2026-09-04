@@ -54,7 +54,7 @@ export default function OrderTimeline({ history = [] }) {
       return (
         <div>
           <span>
-            Added <strong>{details.quantity}x {details.menu_item}</strong> (@ ${Number(details.unit_price).toFixed(2)})
+            Added <strong>{details.quantity}x {details.menu_item}</strong> (@ ₹{Number(details.unit_price).toFixed(2)})
           </span>
           {details.special_instructions && (
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>

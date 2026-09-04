@@ -53,7 +53,7 @@ export default function MenuItemCard({
               color: 'var(--primary)',
             }}
           >
-            ${Number(item.price).toFixed(2)}
+            ₹{Number(item.price).toFixed(2)}
           </span>
         </div>
 

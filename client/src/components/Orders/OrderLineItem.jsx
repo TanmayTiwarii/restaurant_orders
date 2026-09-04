@@ -49,7 +49,7 @@ export default function OrderLineItem({
             {line.menu_item_name}
           </span>
           <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            (@ ${Number(line.unit_price).toFixed(2)})
+            (@ ₹{Number(line.unit_price).toFixed(2)})
           </span>
           {line.voided && (
             <Badge variant="badge-voided">
@@ -98,7 +98,7 @@ export default function OrderLineItem({
             textDecoration: line.voided ? 'line-through' : 'none',
           }}
         >
-          ${lineTotal}
+          ₹{lineTotal}
         </span>
 
         {canEdit && !line.voided && !isOrderClosed && (

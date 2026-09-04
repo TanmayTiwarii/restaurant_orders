@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layers, DollarSign, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { Layers, IndianRupee, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 
@@ -100,11 +100,11 @@ export default function BulkActionBar({
             </select>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>$</span>
+              <span style={{ color: 'var(--text-muted)' }}>₹</span>
               <input
                 type="number"
                 step="0.01"
-                placeholder="15.00"
+                placeholder="250.00"
                 className="form-input"
                 style={{ width: '100px', padding: '0.45rem 0.65rem' }}
                 value={newPrice}
@@ -186,7 +186,7 @@ export default function BulkActionBar({
                     <td style={{ fontSize: '0.8125rem' }}>
                       {res.success ? (
                         <span style={{ color: 'var(--text-secondary)' }}>
-                          Updated price: ${Number(res.item?.price).toFixed(2)}, Available:{' '}
+                          Updated price: ₹${Number(res.item?.price).toFixed(2)}, Available:{' '}
                           {res.item?.available ? 'Yes' : 'No'}
                         </span>
                       ) : (
