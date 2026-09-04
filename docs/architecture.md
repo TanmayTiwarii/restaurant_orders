@@ -28,8 +28,9 @@ The system is composed of three primary layers structured with a strict separati
 ```
 
 1. **Frontend (Client)**: A React Single Page Application (SPA) bundled via Vite. It communicates exclusively with the backend via a standardized Axios client with an HTTP Bearer token authorization interceptor.
-2. **Backend (Server)**: An Express REST API running on Node.js using native ES Modules (`import`/`export`). Incoming requests pass through JWT verification middleware (`authenticate`) and role-based guards (`roleGuard`) before invoking domain services (`orderService`, `menuService`, `alertService`, etc.).
+2. **Backend (Server)**: An Express REST API running on Node.js using native ES Modules (`import`/`export`). Incoming requests pass through JWT verification middleware (`authenticate`) and role-based guards (`roleGuard`) before invoking domain services (`orderService`, `menuService`, `alertService`, `receiptService`, etc.).
 3. **Database (Data Storage)**: Managed PostgreSQL (Supabase). The application uses connection pooling (`pg.Pool`) with parameterized SQL queries to prevent SQL injection and guarantee strict transactional integrity (`BEGIN ... COMMIT / ROLLBACK`).
+4. **External Services**: Integrated with **Resend** for transactional email delivery. When receipts are emailed, `receiptService` builds styled HTML receipts and dispatches them via the Resend API, appending an audit record to `order_history`.
 
 ---
 

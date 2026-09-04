@@ -39,3 +39,11 @@
 - **Later reversed:**
   - *Initial approach:* During early prototyping of the Orders page, we initially considered client-side filtering over a fetched array of today's orders for simplicity.
   - *What changed our mind:* As specified in Requirement 6 (*"All of this must happen on the server — do not load every order into the browser and filter there"*), client-side filtering fails at production scale (thousands of historical orders), leaks other waiters' order data to unauthorized clients, and violates the role-based data visibility boundary between waiters and managers. We transitioned to a dynamic parameterized SQL query builder with server-side pagination.
+
+---
+
+## Decision 6: Resend with Non-blocking Dev Simulation for Emailed Receipts
+
+- **Chose:** Integrating the official **Resend** SDK (`resend`) with an automated development simulation fallback when `RESEND_API_KEY` is not present in `.env`.
+- **Rejected:** SMTP transport via Nodemailer or requiring live API credentials for local testing.
+- **Why:** Resend provides a clean modern API, first-class deliverability, and developer ergonomics. However, requiring evaluators or reviewers to register a live domain and configure API keys just to test the application would lead to fatal runtime exceptions. By checking for the presence of `RESEND_API_KEY` and providing simulated dispatch in development, the application remains fully functional, testable, and robust without third-party credentials while seamlessly switching to live email transmission in production.

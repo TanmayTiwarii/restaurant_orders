@@ -89,9 +89,24 @@ left over, pick whichever of these sounds most useful and build it:
 - A loyalty or repeat-customer program.
 - Ingredient-level stock deduction per order.
 - Reservation and table management.
-- Printable or emailed receipts.
+- **Printable or emailed receipts** — *Implemented via Resend* (see details below).
 - Time-of-day pricing for happy-hour specials.
 - Multiple locations with per-location pricing.
+
+### Implemented Stretch Feature: Emailed Dining Receipts (Resend)
+
+We implemented automated **Emailed Dining Receipts** powered by the **Resend** email platform.
+
+- **How it works**:
+  - Fetches the order lines, running total (excluding voided items), waiter details, and table number.
+  - Compiles an HTML receipt styled with restaurant branding, itemized prices in ₹, voided item annotations, and grand total.
+  - Dispatches the email through the Resend API. If no `RESEND_API_KEY` is configured in development, the system logs a warning and simulates the dispatch without failing.
+  - Automatically writes an immutable audit record (`Receipt emailed to <email>`) to `order_history` so the order timeline tracks when receipts are dispatched.
+- **How to trigger**:
+  - **In the UI**: Open any order in the Order Detail view (`/orders/:id`), click **"Email Receipt"** (top actions or next to the Running Total), enter the customer's email in the modal, and click **"Send Receipt"**.
+  - **Via API**: Authenticated `POST /orders/:id/receipt` with body `{ "email": "customer@example.com" }`.
+- **Configuration**:
+  - Add `RESEND_API_KEY` and `RESEND_FROM_EMAIL` to `server/.env`.
 
 
 ---

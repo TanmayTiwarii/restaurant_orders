@@ -43,6 +43,21 @@
 | 9 | History you cannot rewrite | Done | Append-only `order_history` audit trail capturing every status transition (with old/new), line additions, voids (with reason), notes, and collaborators |
 | 10 | Slow-order alerts | Done | Alerts for orders open > 15 min without reaching Ready; badge count in sidebar; acknowledgement with 10-minute automatic re-alert expiry |
 
+## Stretch goals implemented
+
+### Emailed Dining Receipts (Powered by Resend)
+- **What it does:** Allows staff (waiters and managers) to dispatch official, beautifully styled HTML receipts directly to a customer's email address for any order.
+- **How it works:**
+  1. Retrieves order details using `orderService.getOrder(orderId)` including item snapshots, unit prices in ₹, voided item statuses, server name, and calculated totals.
+  2. Compiles a responsive, branded HTML receipt with table information, item breakdown, and bill totals.
+  3. Dispatches the email via the official **Resend** SDK (`resend.emails.send`). In local development where `RESEND_API_KEY` is not configured, it warns and simulates delivery so workflows do not break.
+  4. Automatically records an audit log entry in `order_history` via `orderService.addNote(orderId, 'Receipt emailed to <email>', user)` so the dispatch is permanently preserved in the order's immutable timeline.
+- **How to trigger it:**
+  - **Via UI**: Open any order detail view (`/orders/:id`), click **"Email Receipt"** (available in the top actions bar or next to the Running Total), enter the customer's email in the modal, and click **"Send Receipt"**.
+  - **Via API**: Send an authenticated request `POST /orders/:id/receipt` with body `{ "email": "customer@example.com" }`.
+- **Configuration**:
+  Add `RESEND_API_KEY=re_...` and `RESEND_FROM_EMAIL=receipts@yourdomain.com` (or `onboarding@resend.dev`) in `server/.env`.
+
 ## How much time did you actually spend?
 
 ~11.5 hours across 5 structured sessions (Schema & Auth -> Core Services -> Analytics & Alerts -> Frontend UI -> Testing & Documentation).

@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { validationResult } from 'express-validator';
+import { validationResult, body } from 'express-validator';
 import authenticate from '../middleware/auth.js';
 import * as orderService from '../services/orderService.js';
+import * as receiptService from '../services/receiptService.js';
 import { query } from '../config/db.js';
 import { createOrderRules, transitionRules, uuidParam } from '../utils/validators.js';
 
@@ -127,5 +128,26 @@ router.get('/:id/history', authenticate, uuidParam(), validate, async (req, res,
     next(err);
   }
 });
+
+// POST /api/orders/:id/receipt — email order receipt via Resend
+router.post(
+  '/:id/receipt',
+  authenticate,
+  uuidParam(),
+  body('email').isEmail().withMessage('A valid customer email is required'),
+  validate,
+  async (req, res, next) => {
+    try {
+      const result = await receiptService.sendOrderReceipt(
+        req.params.id,
+        req.body.email.trim(),
+        req.user,
+      );
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 export default router;

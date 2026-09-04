@@ -15,6 +15,7 @@ import {
   User,
   Shield,
   Utensils,
+  Mail,
 } from 'lucide-react';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -61,6 +62,12 @@ export default function OrderDetailPage() {
   const [noteModalOpen, setNoteModalOpen] = useState(false);
   const [noteText, setNoteText] = useState('');
   const [noteSubmitting, setNoteSubmitting] = useState(false);
+
+  // Email Receipt Modal
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
+  const [emailSuccessMsg, setEmailSuccessMsg] = useState('');
 
   const fetchOrderData = useCallback(async () => {
     try {
@@ -208,6 +215,29 @@ export default function OrderDetailPage() {
     }
   };
 
+  // Email Receipt
+  const handleSendReceipt = async (e) => {
+    if (e) e.preventDefault();
+    if (!customerEmail.trim()) return;
+
+    try {
+      setEmailSubmitting(true);
+      setActionError('');
+      const res = await api.post(`/orders/${id}/receipt`, {
+        email: customerEmail.trim(),
+      });
+      setEmailSuccessMsg(res.data.message || 'Receipt sent successfully!');
+      setTimeout(() => setEmailSuccessMsg(''), 5000);
+      setEmailModalOpen(false);
+      setCustomerEmail('');
+      fetchOrderData();
+    } catch (err) {
+      setActionError(err.response?.data?.error || err.message || 'Failed to email receipt');
+    } finally {
+      setEmailSubmitting(false);
+    }
+  };
+
   // Archive / Restore
   const handleToggleArchive = async () => {
     try {
@@ -264,6 +294,12 @@ export default function OrderDetailPage() {
               Add Note
             </Button>
           )}
+
+          {canAct && (
+            <Button variant="secondary" size="sm" onClick={() => setEmailModalOpen(true)} icon={Mail}>
+              Email Receipt
+            </Button>
+          )}
         </div>
       </div>
 
@@ -284,6 +320,26 @@ export default function OrderDetailPage() {
         >
           <AlertOctagon size={18} />
           <span>{actionError}</span>
+        </div>
+      )}
+
+      {/* Email Success Alert Banner */}
+      {emailSuccessMsg && (
+        <div
+          style={{
+            padding: '0.875rem 1.25rem',
+            backgroundColor: 'var(--success-subtle)',
+            border: '1px solid rgba(34, 197, 94, 0.3)',
+            borderRadius: 'var(--radius-md)',
+            color: 'var(--success)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            fontSize: '0.875rem',
+          }}
+        >
+          <CheckCircle2 size={18} />
+          <span>{emailSuccessMsg}</span>
         </div>
       )}
 
@@ -394,15 +450,27 @@ export default function OrderDetailPage() {
               </div>
             </div>
 
-            <div
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '1.75rem',
-                fontWeight: 800,
-                color: 'var(--primary)',
-              }}
-            >
-              ₹{Number(order.total || 0).toFixed(2)}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '1.75rem',
+                  fontWeight: 800,
+                  color: 'var(--primary)',
+                }}
+              >
+                ₹{Number(order.total || 0).toFixed(2)}
+              </div>
+              {canAct && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setEmailModalOpen(true)}
+                  icon={Mail}
+                >
+                  Email Receipt
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -592,6 +660,55 @@ export default function OrderDetailPage() {
               autoFocus
             />
           </div>
+        </form>
+      </Modal>
+
+      {/* Email Receipt Modal */}
+      <Modal
+        isOpen={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+        title="Email Order Receipt"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setEmailModalOpen(false)}>Cancel</Button>
+            <Button variant="primary" onClick={handleSendReceipt} loading={emailSubmitting} icon={Mail}>
+              Send Receipt
+            </Button>
+          </>
+        }
+      >
+        <form onSubmit={handleSendReceipt}>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0 0 0.75rem 0' }}>
+              Dispatch an official itemized bill for <strong>Table #{order.table_number}</strong> directly to the customer via Resend.
+            </p>
+            <div
+              style={{
+                padding: '0.75rem 1rem',
+                backgroundColor: 'var(--bg-app)',
+                borderRadius: 'var(--radius-md)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                fontSize: '0.875rem',
+              }}
+            >
+              <span style={{ color: 'var(--text-muted)' }}>Total Billed:</span>
+              <strong style={{ fontFamily: 'var(--font-mono)', color: 'var(--primary)', fontSize: '1.1rem' }}>
+                ₹{Number(order.total || 0).toFixed(2)}
+              </strong>
+            </div>
+          </div>
+
+          <Input
+            label="Customer Email Address"
+            type="email"
+            placeholder="customer@example.com"
+            value={customerEmail}
+            onChange={(e) => setCustomerEmail(e.target.value)}
+            required
+            autoFocus
+          />
         </form>
       </Modal>
     </div>
